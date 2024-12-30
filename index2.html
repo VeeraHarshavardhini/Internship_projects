@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fef7ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .converter-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #4caf50;
+    }
+
+    input, select, button {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    input#temperature {
+      width: 92%;
+      display: inline-block;
+    }
+
+    select, button {
+      width: 100%;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+
+    .result {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #0a0b0b;
+    }
+  </style>
+</head>
+<body>
+  <div class="converter-container">
+    <h1>Temperature Converter</h1>
+    <!-- Input Field -->
+    <input type="number" id="temperature" placeholder="Enter temperature">
+
+    <!-- Dropdown for Unit Selection -->
+    <select id="unit">
+      <option value="celsius">Celsius</option>
+      <option value="fahrenheit">Fahrenheit</option>
+      <option value="kelvin">Kelvin</option>
+    </select>
+
+    <!-- Convert Button -->
+    <button onclick="convertTemperature()">Convert</button>
+
+    <!-- Display Area -->
+    <div class="result" id="result">Converted temperature will appear here.</div>
+  </div>
+
+  <script>
+    // Function to handle the temperature conversion
+    function convertTemperature() {
+      const temperature = parseFloat(document.getElementById('temperature').value);
+      const unit = document.getElementById('unit').value;
+      const resultElement = document.getElementById('result');
+
+      if (isNaN(temperature)) {
+        resultElement.textContent = "Please enter a valid number.";
+        resultElement.style.color = "red";
+        return;
+      }
+
+      let convertedTemperature = 0;
+      let convertedUnit = '';
+
+      if (unit === 'celsius') {
+        convertedTemperature = (temperature * 9/5) + 32;
+        convertedUnit = 'Fahrenheit';
+      } else if (unit === 'fahrenheit') {
+        convertedTemperature = (temperature - 32) * 5/9;
+        convertedUnit = 'Celsius';
+      } else if (unit === 'kelvin') {
+        convertedTemperature = temperature + 273.15;
+        convertedUnit = 'Kelvin';
+      }
+
+      resultElement.textContent = `${convertedTemperature.toFixed(2)}° ${convertedUnit}`;
+      resultElement.style.color = "#333";
+    }
+  </script>
+</body>
+</html>

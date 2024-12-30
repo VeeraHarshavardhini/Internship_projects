@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do Web App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+
+    .task-item.completed {
+      background-color: #d4edda;
+      text-decoration: line-through;
+    }
+
+    .task-item button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #ff00a2;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .task-item button:hover {
+      background-color: #00b315;
+    }
+
+    .input-group {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .input-group button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #28a745;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .input-group button:hover {
+      background-color: #218838;
+    }
+
+    .list-container {
+      margin-bottom: 20px;
+    }
+
+    .task-date {
+      font-size: 0.8em;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>To-Do List</h1>
+
+  <div class="input-group">
+    <input type="text" id="taskInput" placeholder="Add a new task..." />
+    <button onclick="addTask()">Add Task</button>
+  </div>
+
+  <div class="list-container">
+    <h2>Pending Tasks</h2>
+    <ul id="pendingTasks" class="task-list"></ul>
+  </div>
+
+  <div class="list-container">
+    <h2>Completed Tasks</h2>
+    <ul id="completedTasks" class="task-list"></ul>
+  </div>
+</div>
+
+<script>
+  // Arrays to hold tasks
+  let pendingTasks = [];
+  let completedTasks = [];
+
+  // Function to add a new task
+  function addTask() {
+    const taskInput = document.getElementById("taskInput");
+    const taskText = taskInput.value.trim();
+
+    if (taskText) {
+      const task = {
+        text: taskText,
+        dateAdded: new Date().toLocaleString(),
+        completed: false
+      };
+      pendingTasks.push(task);
+      taskInput.value = '';
+      renderTasks();
+    }
+  }
+
+  // Function to mark a task as complete
+  function markAsComplete(index) {
+    const task = pendingTasks.splice(index, 1)[0];
+    task.completed = true;
+    task.dateCompleted = new Date().toLocaleString();
+    completedTasks.push(task);
+    renderTasks();
+  }
+
+  // Function to delete a task
+  function deleteTask(index, isCompleted) {
+    if (isCompleted) {
+      completedTasks.splice(index, 1);
+    } else {
+      pendingTasks.splice(index, 1);
+    }
+    renderTasks();
+  }
+
+  // Function to edit a task
+  function editTask(index, isCompleted) {
+    const newTaskText = prompt("Edit task:");
+    if (newTaskText) {
+      if (isCompleted) {
+        completedTasks[index].text = newTaskText;
+      } else {
+        pendingTasks[index].text = newTaskText;
+      }
+      renderTasks();
+    }
+  }
+
+  // Function to render tasks on the page
+  function renderTasks() {
+    const pendingTasksList = document.getElementById("pendingTasks");
+    const completedTasksList = document.getElementById("completedTasks");
+
+    pendingTasksList.innerHTML = '';
+    completedTasksList.innerHTML = '';
+
+    // Render pending tasks
+    pendingTasks.forEach((task, index) => {
+      const taskItem = document.createElement("li");
+      taskItem.classList.add("task-item");
+
+      taskItem.innerHTML = `
+        <span>${task.text} <span class="task-date">(Added: ${task.dateAdded})</span></span>
+        <span>
+          <button onclick="markAsComplete(${index})">Complete</button>
+          <button onclick="editTask(${index}, false)">Edit</button>
+          <button onclick="deleteTask(${index}, false)">Delete</button>
+        </span>
+      `;
+
+      pendingTasksList.appendChild(taskItem);
+    });
+
+    // Render completed tasks
+    completedTasks.forEach((task, index) => {
+      const taskItem = document.createElement("li");
+      taskItem.classList.add("task-item", "completed");
+
+      taskItem.innerHTML = `
+        <span>${task.text} <span class="task-date">(Added: ${task.dateAdded}, Completed: ${task.dateCompleted})</span></span>
+        <span>
+          <button onclick="deleteTask(${index}, true)">Delete</button>
+        </span>
+      `;
+
+      completedTasksList.appendChild(taskItem);
+    });
+  }
+</script>
+</body>
+</html>
